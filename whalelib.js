@@ -81,7 +81,7 @@ class SceneLoader {
         }
     }
     /**
-     * Returns root element if exist.
+     * Returns root element if exists.
      */
     static #get_root() {
         if (document.getElementsByTagName("root").length == 0) {
@@ -137,9 +137,6 @@ class SceneLoader {
                 });
             });
         });
-
-        // css is unneded to be loaded this way,
-        // just add <link stylesheet> tag to the loadable html body.
     }
 
     /**

@@ -11,7 +11,7 @@ var offset = 0;
 // bounce animation example loop
 (function bounce() {
     if (SceneLoader.get_current_scene() == old_scene) {
-        document.getElementById("example_element").style.scale = `${.5 + Math.abs(Math.sin(.05 * offset))}`;
+        document.getElementById("example_element").style.scale = `${.5 + Math.abs(Math.pow(Math.sin(.05 * offset), 2))}`;
 
         offset++;
 

@@ -6,7 +6,7 @@
 var offset = 0;
 
 // evaluate additional `.js` file.
-Tools.eval("./root/example_scene/src/text_replacer.js");
+Tools.eval("./scns/example_scene/src/text_replacer.js");
 
 // bounce animation example loop
 (function bounce() {

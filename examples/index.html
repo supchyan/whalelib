@@ -32,8 +32,8 @@
     const otherExampleParent = new Scene(document.getElementById("otherExampleParent"));
 
     // load scene content using this
-    exampleParent.load("./root/example_scene");
-    otherExampleParent.load("./root/other_example_scene");
+    exampleParent.load("./scns/example_scene");
+    otherExampleParent.load("./scns/other_example_scene");
 
     // unload scene after a while
     setTimeout(() => { exampleParent.unload() }, 4000);

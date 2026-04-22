@@ -1,12 +1,27 @@
 /**
- * Contains methods related to javascript execution.
+ * Contains QoL to improve development process.
  */
-class SceneInvoker {
+class Tools {
     /**
-     * Evaluates javascript code by path specified.
+     * Applies several styles to a <body> tag.
      */
-    static invoke(path_to_script) {
-        fetch(`${SceneLoader.getCurrentScene()}${path_to_script}`).then(res => {
+    static useCustomBody() {
+        document.body.setAttribute("style", `/* modified by whale-lib */
+            padding: 0;
+            margin: 0;
+            
+            width: 100vw;
+            height: 100vh;
+
+            overflow: hidden;
+        `);
+    }
+    /**
+     * Evaluates javascript by path specified.
+     * @param {*} path path to javascript file to evaluate.
+     */
+    static eval(path) {
+        fetch(path).then(res => {
             if (!res.ok) {
                 return;
             }
@@ -16,38 +31,12 @@ class SceneInvoker {
             });
         });
     }
-}
-/**
- * Contains methods related to system features of the lib, such as scene layout initialization.
- */
-class SceneSystem {
+
     /**
-     * Initializes `index.html` modifying styles for working with whale-lib.
+     * Returns `true` if `element` has empty body.
      */
-    static init() {
-        document.body.setAttribute("style", `/* modified by whale-lib */
-            padding: 0;
-            margin: 0;
-        `);
-
-        if (document.getElementsByTagName("root").length == 0) {
-            const root = document.createElement("root");
-            root.setAttribute("style", `/* modified by whale-lib */
-                box-sizing: border-box;
-                display: block;
-                background-color: #111;
-
-                width: 100vw;
-                height: 100vh;
-
-                overflow: hidden;
-
-                padding: 0;
-                margin: 0;
-            `);
-
-            document.body.appendChild(root);
-        }
+    static isEmpty(element) {
+        return element.innerHTML == "";
     }
 }
 /**
@@ -56,107 +45,59 @@ class SceneSystem {
  * To load the scene call `SceneLoader.load("path/to/scene_folder")`;
  * 
  * To unload the scene call `SceneLoader.unload()`;
- * 
- * To get scene name call `SceneLoader.get_scene()`.
  */
-class SceneLoader {
+class Scene {
     /**
-     * Flag of whenever debug messages is allowed for a `SceneLoader`.
+     * @param {*} scene `HTMLElement` reference. Use something like `document.getElementById()`. 
+    *                   It will be used as a container to store scene content.
      */
-    static #is_debug_enabled = false;
-    /**
-     * Current loaded scene path [name].
-     */
-    static #current_scene = null;
+    constructor(parent) {
+        parent.setAttribute("style", `/* modified by whale-lib */
+            box-sizing: border-box;
+            display: block;
 
-    static #root_err_msg() { 
-        return "<root> node is not initialized. Use `SceneSystem.init()` from `scene_system.js` before loading/unloading any scene.";
-    } 
-    static #html_loaded_msg(scene) { 
-        return `Loaded HTML of <${scene}>`;
-    }
-    static #html_load_err_msg(scene) { 
-        return `Cannot load "index.html" of <${scene}>. Does the file exist?`;
-    } 
-    static #js_loaded_msg(scene) { 
-        return `Evaluated javascript of <${scene}>`;
-    }
-    static #js_load_err_msg(scene) { 
-        return `Cannot load "script.js" of <${scene}>. Does the file exist?`;
-    } 
-    static #js_eval_err_msg(scene) { 
-        return `Cannot evaluate javascript of <${scene}>`;
-    } 
-    static #scene_unloaded_msg(scene) { 
-        return `Unloaded scene: <${scene}>`;
+            width: 100%;
+            height: 100%;
+
+            flex-grow: 1;
+
+            padding: 0;
+            margin: 0;
+        `);
+
+        this._parent = parent;
     }
 
     /**
-     * Sends debug message to a console if debug mode is enabled.
+     * Loads scene content by `scenePath` specified.
+     * @param {*} scenePath Path to scene directory.
      */
-    static #debug_message(message) {
-        if (this.#is_debug_enabled) {
-            console.debug(`[DEBUG] ${message}`);
-        }
-    }
-    /**
-     * Returns root element if exists.
-     */
-    static #get_root() {
-        if (document.getElementsByTagName("root").length == 0) {
-            return null;
-        }
-        return document.getElementsByTagName("root")[0];
-    }
-    
-    /** 
-     * Call this to enable debug console to handle whenever scene is loaded/unloaded. 
-     */
-    static enableDebug() {
-        this.#is_debug_enabled = true;
-    }
-
-    /**
-     * Loads scene by `scene_path` in specified `root` node. You can keep loaded **only** 1 scene at the same time.
-     * @param {*} scene_path Path to scene directory.
-     */
-    static load(scene_path) {
-        if (!this.#get_root()) {
-            return console.error(this.#root_err_msg());
-        }
+    load(scenePath) {
+        if (!this._parent) return;
 
         // remove "/" as a last char if exists
-        if (scene_path.endsWith("/")) {
-            scene_path = scene_path.substring(0, scene_path.length - 1);
+        if (scenePath.endsWith("/")) {
+            scenePath = scenePath.substring(0, scenePath.length - 1);
         }
 
-        this.#current_scene = scene_path;
-
         // load html
-        fetch(`${scene_path}/index.html`).then(res => {
-            if (!res.ok) {
-                this.#debug_message(this.#html_load_err_msg(this.#current_scene));
-                this.unload();
-                return;
-            }
+        fetch(`${scenePath}/index.html`).then(res => {
+            if (!res.ok) return this.unload();
             
             res.text().then(content => {
-                this.#get_root().innerHTML = content;
-                this.#debug_message(this.#html_loaded_msg(this.#current_scene));
+                this._parent.innerHTML = content;
 
                 // execute javascript
-                fetch(`${scene_path}/script.js`).then(res => {
-                    if (!res.ok) {
-                        this.#debug_message(this.#js_load_err_msg(this.#current_scene));
-                        this.unload();
-                        return;
-                    }
+                fetch(`${scenePath}/script.js`).then(res => {
+                    if (!res.ok) return this.unload();
 
                     res.text().then(code => {
                         eval(code);
-                        this.#debug_message(this.#js_loaded_msg(this.#current_scene));
+
+                        // switch loaded flag
+                        this.isLoaded = true;
                     }).catch(e => {
-                        this.#debug_message(this.#js_eval_err_msg(this.#current_scene));
+                        console.error(e);
                     });
                 });
             });
@@ -165,25 +106,11 @@ class SceneLoader {
 
     /**
      * Unloads scene. Doesn't affect evaluated javascript code, 
-     * so it have to be stopped on place.
+     * so it have to be stopped from the inside.
      */
-    static unload() {
-        if (!this.#get_root()) {
-            return console.error(this.#root_err_msg());
-        }
+    unload() {
+        if (!this._parent) return;
 
-        this.#get_root().innerHTML = "";
-        this.#debug_message(this.#scene_unloaded_msg(this.#current_scene));
-
-        this.#current_scene = null;
-    }
-
-    /**
-     * Returns current loaded scene name (path) or `null` if nothing is loaded.
-     * 
-     * You can use this method to handle loops in scene's javascript.
-     */
-    static getCurrentScene() {
-        return this.#current_scene;
+        this._parent.innerHTML = "";
     }
 }

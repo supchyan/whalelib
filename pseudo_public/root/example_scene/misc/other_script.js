@@ -1,1 +1,1 @@
-document.getElementById("example_element").innerText = "Example whale 🐳";
+document.getElementById("exampleElement").innerText = "Example whale 🐳";

@@ -4,19 +4,37 @@
     <link rel="icon" href="/">
 </head>
 
-<body></body>
+<body>
+    <div id="root"></div>
+    <div id="otherRoot"></div>
+</body>
+
+<style>
+    body {
+        background-color: #111;
+        display: flex;
+    }
+    #otherRoot {
+        max-width: 20rem;
+    }
+</style>
 
 <!-- connect whalelib scripts -->
 <script src="../whalelib.js"></script>
 
 <script>
-    // initialize default settings
-    SceneSystem.init();
-    // enable debug log for scene loader
-    SceneLoader.enableDebug();
-    // load the `example_scene` (path to scene directory)
-    SceneLoader.load("./root/example_scene");
+    // apply regular style attributes to a <body> tag
+    Tools.useCustomBody();
 
-    // unload the scene after 4000 ticks
-    setTimeout(() => { SceneLoader.unload(); }, 4000);
+    // create scene instances
+    const scene         = new Scene(document.getElementById("root"));
+    const otherScene    = new Scene(document.getElementById("otherRoot"));
+
+    // load scene content using this
+    scene.load("./root/example_scene");
+    otherScene.load("./root/other_example_scene");
+
+    // unload scenes after a while
+    setTimeout(() => { scene.unload() }, 4000);
+    setTimeout(() => { otherScene.unload() }, 6000);
 </script>

@@ -70,10 +70,10 @@ class ViewportManager {
 
     /**
      * Draws an object with specified flags.
-     * @param {*} mesh `Mesh` object (use MeshManager.createMesh()).
-     * @param {*} color Object color (in HEX).
+     * @param {*} mesh `Mesh` object. Use `MeshManager.createMesh()`.
+     * @param {*} color Object color as HEX string.
      * @param {*} rotation Object rotation vector as `Vector3`.
-     * @param {*} position position `Vector2`.
+     * @param {*} position Object position as `Vector2` [centered at (0, 0) by default].
      */
     drawObject(mesh, color, rotation = new Vector3(), position = new Vector2()) {
         const vertices  = mesh.vertices;
@@ -83,7 +83,7 @@ class ViewportManager {
         this.ctx.clearRect(0, 0, this.rect.w, this.rect.h); // clear screen
 
         for (const vector3 of vertices) {
-            var vector2 = vector3.rotate(rotation).toVector2();     // point projection in local coords
+            var vector2 = vector3.toRotation(rotation).toVector2();     // point projection in local coords
             var point   = this.#map(vector2).add(position);   // point projection in canvas coords
 
             points.push(point); // add point to a list

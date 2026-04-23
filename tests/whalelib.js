@@ -173,18 +173,21 @@ class Vector2 {
         this.x = x;
         this.y = y;
     }
+    
     /**
      * new Vector2(0, 0).
      */
-    static Zero() {
+    static get Zero() {
         return new Vector2(0, 0);
     }
+
     /**
      * Returns current vector length.
      */
     getLength() {
         return Math.sqrt((Math.pow(this.x, 2) + Math.pow(this.y, 2)));
     }
+
     /**
      * Adds `offsetVector` to current vector.
      * @param {*} offsetVector reference `Vector2`.
@@ -203,6 +206,7 @@ class Vector3 {
         this.y = y;
         this.z = z;
     }
+
     /**
      * Rotates `Vector3` by specified angle around Y.
      * @param {*} angle angle in radians.
@@ -218,6 +222,7 @@ class Vector3 {
             (this.x * sin + this.z * cos) + (1 - cos),
         );
     }
+
     /**
      * Rotates vector with specified angle around Z.
      * @param {*} angle angle in radians.
@@ -233,6 +238,7 @@ class Vector3 {
             this.z
         );
     }
+
     /**
      * Rotates vector with specified angle around X.
      * @param {*} angle angle in radians.
@@ -248,18 +254,21 @@ class Vector3 {
             (this.z * cos - this.y * sin) + (1 - cos)
         );
     }
+
     /**
      * new Vector3(0, 0, 0).
      */
-    static Zero() {
+    static get Zero() {
         return new Vector3(0, 0, 0);
     }
+
     /**
      * Returns current vector length.
      */
     getLength() {
         return Math.sqrt((Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2)));
     }
+
     /**
      * Converts `Vector3` to `Vector2` projecting it to 2D space.
      * @returns New `Vector2` object.
@@ -270,14 +279,16 @@ class Vector3 {
             this.y / this.z
         );
     }
+
     /**
-     * Rotates vector by rotation vector specified.
+     * Rotates vector by a rotation vector specified.
      * @param {*} rotation rotation vector as `Vector3`.
      * @returns New rotated `Vector3`.
      */
-    rotate(rotation) {
+    toRotation(rotation) {
         return this.#rotateYZ(rotation.x).#rotateXZ(rotation.y).#rotateXY(rotation.z);
     }
+
     /**
      * Adds `offsetVector` to current vector.
      * @param {*} offsetVector reference `Vector3`.
@@ -398,10 +409,10 @@ class ViewportManager {
 
     /**
      * Draws an object with specified flags.
-     * @param {*} mesh `Mesh` object (use MeshManager.createMesh()).
-     * @param {*} color Object color (in HEX).
+     * @param {*} mesh `Mesh` object. Use `MeshManager.createMesh()`.
+     * @param {*} color Object color as HEX string.
      * @param {*} rotation Object rotation vector as `Vector3`.
-     * @param {*} position position `Vector2`.
+     * @param {*} position Object position as `Vector2` [centered at (0, 0) by default].
      */
     drawObject(mesh, color, rotation = new Vector3(), position = new Vector2()) {
         const vertices  = mesh.vertices;
@@ -411,7 +422,7 @@ class ViewportManager {
         this.ctx.clearRect(0, 0, this.rect.w, this.rect.h); // clear screen
 
         for (const vector3 of vertices) {
-            var vector2 = vector3.rotate(rotation).toVector2();     // point projection in local coords
+            var vector2 = vector3.toRotation(rotation).toVector2();     // point projection in local coords
             var point   = this.#map(vector2).add(position);   // point projection in canvas coords
 
             points.push(point); // add point to a list

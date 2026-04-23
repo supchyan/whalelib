@@ -4,6 +4,7 @@ class Vector3 {
         this.y = y;
         this.z = z;
     }
+
     /**
      * Rotates `Vector3` by specified angle around Y.
      * @param {*} angle angle in radians.
@@ -19,6 +20,7 @@ class Vector3 {
             (this.x * sin + this.z * cos) + (1 - cos),
         );
     }
+
     /**
      * Rotates vector with specified angle around Z.
      * @param {*} angle angle in radians.
@@ -34,6 +36,7 @@ class Vector3 {
             this.z
         );
     }
+
     /**
      * Rotates vector with specified angle around X.
      * @param {*} angle angle in radians.
@@ -49,18 +52,21 @@ class Vector3 {
             (this.z * cos - this.y * sin) + (1 - cos)
         );
     }
+
     /**
      * new Vector3(0, 0, 0).
      */
-    static Zero() {
+    static get Zero() {
         return new Vector3(0, 0, 0);
     }
+
     /**
      * Returns current vector length.
      */
     getLength() {
         return Math.sqrt((Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2)));
     }
+
     /**
      * Converts `Vector3` to `Vector2` projecting it to 2D space.
      * @returns New `Vector2` object.
@@ -71,14 +77,16 @@ class Vector3 {
             this.y / this.z
         );
     }
+
     /**
-     * Rotates vector by rotation vector specified.
+     * Rotates vector by a rotation vector specified.
      * @param {*} rotation rotation vector as `Vector3`.
      * @returns New rotated `Vector3`.
      */
-    rotate(rotation) {
+    toRotation(rotation) {
         return this.#rotateYZ(rotation.x).#rotateXZ(rotation.y).#rotateXY(rotation.z);
     }
+
     /**
      * Adds `offsetVector` to current vector.
      * @param {*} offsetVector reference `Vector3`.

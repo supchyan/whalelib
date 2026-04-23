@@ -5,9 +5,9 @@ My general-purpose frontend library for web applications.
 ```
 
 ### Usage
-Clone [whalelib.js](./whalelib.js) to `public` directory of your project so it can be used on client side.
+Run `build.js` to bundle whalelib as a self-contained file. Then include this file into your public directory to make it accessable on client-side.
 
-Check [examples](./examples) folder as an example of common usage of this lib.
+Check [tests](./tests) folder as an example of common usage of this lib.
 
 ### Vision
 I see the web-development process as self-contained scenes with a bunch of stuff including scripts/resources/styles and etc.

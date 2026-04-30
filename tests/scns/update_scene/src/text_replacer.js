@@ -1,0 +1,1 @@
+document.getElementById("updateElement").innerText = "Updated whale 🐳";

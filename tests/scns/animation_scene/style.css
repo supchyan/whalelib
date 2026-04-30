@@ -1,0 +1,31 @@
+#animationSceneContainer {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    background-color: #4333;
+
+    font-size: 2rem;
+    font-family: "Arial";
+    font-weight: bold;
+}
+@keyframes testAnimation {
+    from {
+        color: red;
+    }
+    to {
+        color: blue;
+    }
+}
+@keyframes testAnimation2 {
+    from {
+        color: yellow;
+    }
+    to {
+        color: green;
+    }
+}

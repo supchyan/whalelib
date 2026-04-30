@@ -6,9 +6,9 @@
 var offset = 0;
 
 // evaluate additional `.js` file.
-Tools.eval("./scns/example_scene/src/text_replacer.js");
+Tools.eval("./scns/update_scene/src/text_replacer.js");
 
-exampleScene.update(() => { // reference to a scene instance
-    document.getElementById("exampleElement").style.scale = `${1.25 + .1 * Math.sin(.1 * offset++)}`;
+Scene.get("updateScene").update(() => {
+    document.getElementById("updateElement").style.scale = `${1.25 + .1 * Math.sin(.1 * offset++)}`;
     console.debug(`Invoked at: ${Date.now()}`);
 });

@@ -4,17 +4,50 @@
     <link rel="icon" href="/">
 </head>
 
-<body>
+<body class="centered">
     <!-- scene containers -->
-    <div id="exampleScene"></div>
-    <div id="animationScene"></div>
-    <div id="graphicsScene"></div>
+    <div class="centered" id="content">
+        <div id="updateScene"></div>
+        <div id="animationScene"></div>
+        <div id="graphicsScene"></div>
+    </div>
+    <div class="centered" id="bottomBar">
+        <div class="centered" id="nextButton">next</div>
+        <div class="centered" id="sceneInfo"></div>
+    </div>
 </body>
 
 <style>
+    .centered {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     body {
         background-color: #111;
-        display: flex;
+        flex-direction: column;
+    }
+    #content {
+        width: 100%;
+        flex-grow: 1;
+    }
+    #bottomBar {
+        width: 100%;
+        height: 4rem;
+
+        gap: 1rem;
+
+        color: #ffff;
+        font-family: "Arial";
+
+        user-select: none;
+    }
+    #nextButton {
+        width: 5rem;
+        height: 2rem;
+        background-color: #222222;
+
+        border-radius: .2rem;
     }
 </style>
 
@@ -23,20 +56,29 @@
 
 <script>
     // apply regular style attributes to a <body> tag
-    Tools.useCustomBody();
+    Tools.useCleanBody();
 
-    // create scene instances
-    const exampleScene  = new Scene(document.getElementById("exampleScene"));
-    const animationScene = new Scene(document.getElementById("animationScene"));
-    const graphicsScene = new Scene(document.getElementById("graphicsScene"));
+    // define scenes
+    const scenes = [
+        new Scene(document.getElementById("updateScene")).load("./scns/update_scene"),
+        new Scene(document.getElementById("animationScene")).load("./scns/animation_scene"),
+        new Scene(document.getElementById("graphicsScene")).load("./scns/graphics_scene"),
+    ];
+    
+    var sceneIndex = 0;
 
-    // load scene content using this
-    exampleScene.load("./scns/example_scene");
-    animationScene.load("./scns/animation_scene");
-    graphicsScene.load("./scns/graphics_scene");
+    document.getElementById("nextButton").onclick = () => {
+        sceneIndex = sceneIndex == scenes.length - 1 ? 0 : sceneIndex + 1;
+        updateVisibility(sceneIndex);
+    }
 
-    // unload scene after a while
-    setTimeout(() => { exampleScene.clear() }, 4000);
-    setTimeout(() => { exampleScene.load("./scns/other_scene") }, 5000);
+    function updateVisibility(n) {
+        for (var i = 0; i < scenes.length; i++) {
+            i == n ? scenes[i].show() : scenes[i].collapse()
+        }
 
+        // draw current scene id
+        document.getElementById("sceneInfo").innerHTML = `current scene: ${scenes[n].getId()}`;
+    }
+    updateVisibility(sceneIndex);
 </script>

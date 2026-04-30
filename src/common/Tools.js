@@ -5,7 +5,7 @@ class Tools {
     /**
      * Applies several styles to a <body> tag.
      */
-    static useCustomBody() {
+    static useCleanBody() {
         document.body.setAttribute("style", `/* modified by whale-lib */
             padding: 0;
             margin: 0;

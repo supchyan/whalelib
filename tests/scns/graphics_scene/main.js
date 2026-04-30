@@ -8,7 +8,7 @@ Tools.readFile("./scns/graphics_scene/res/cube.obj", FileType.Text).then(wavefro
     mesh = MeshManager.createMesh(wavefrontData);
 });
 
-graphicsScene.update(() => { // reference to a scene instance
+Scene.get("graphicsScene").update(() => {
     if (mesh) {
         var offset = 0.05 * t++;
         vmanager.drawObject(mesh, ColorHelper.byAngle(30 * offset), 
